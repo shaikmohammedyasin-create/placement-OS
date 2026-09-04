@@ -137,7 +137,7 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({ onOpenAddMod
               key={app.id}
               className="p-4 rounded-xl bg-white dark:bg-[#151519] border border-gray-200 dark:border-[#282830] hover:border-[#007AFF]/40 transition-all border-l-4 border-l-[#007AFF] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 wrap-anywhere">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   {getStatusBadge(app.status)}
                   {app.packageLPA && (
@@ -150,12 +150,12 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({ onOpenAddMod
                   </span>
                 </div>
 
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white wrap-anywhere">
                   {app.company} — {app.role}
                 </h3>
 
                 {app.notes && (
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 wrap-anywhere">
                     {app.notes}
                   </p>
                 )}

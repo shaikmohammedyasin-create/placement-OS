@@ -180,7 +180,46 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
 
       {/* Main Tab Content */}
       {activeTab === '38nodes' && (
-        <div className="space-y-10">
+        <div className="space-y-8">
+          {/* Mobile-First Current Position & Next Unlocks Card (<1024px) */}
+          <div className="lg:hidden p-4 rounded-2xl bg-gradient-to-br from-[#5856D6]/10 via-white to-gray-50 dark:from-[#5856D6]/15 dark:via-[#151519] dark:to-[#1D1D22] border border-[#5856D6]/30 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#5856D6]">
+                CURRENT ROADMAP POSITION
+              </span>
+              <span className="text-xs font-mono font-bold text-gray-900 dark:text-white">
+                {completedNodesCount} / 38 Done
+              </span>
+            </div>
+
+            {(() => {
+              const current = MASTER_38_NODES.find(n => !nodeProgress[n.id]?.completed) || MASTER_38_NODES[0];
+              return (
+                <div className="p-3 rounded-xl bg-white dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#5856D6]/10 text-[#5856D6]">
+                      NODE #{current.id}
+                    </span>
+                    <CategoryBadge category={current.category} size="sm" />
+                  </div>
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white mt-1.5">
+                    {current.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    {current.doneCriteria}
+                  </p>
+                  <button
+                    onClick={() => setSelectedNode(current)}
+                    className="mt-2.5 text-xs font-semibold text-[#5856D6] dark:text-[#7A79E0] flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>View Node Details</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+
           {strategicSections.map(section => {
             const sectionNodes = MASTER_38_NODES.filter(n => section.nodeIds.includes(n.id));
             const completedInSection = sectionNodes.filter(n => nodeProgress[n.id]?.completed).length;

@@ -84,6 +84,24 @@ export const AIMentorView: React.FC<AIMentorViewProps> = ({ initialQuery, onOpen
     const textToSend = queryText || input;
     if (!textToSend.trim() || loading) return;
 
+    // Check offline state gracefully (Requirement #27)
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      const offlineMsg: ChatMessage = {
+        id: Date.now().toString(),
+        sender: 'ai',
+        text: `AI Strategic Mentor requires an active internet connection. Your roadmap, planner, tests, and local data remain 100% accessible offline.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, {
+        id: (Date.now() - 1).toString(),
+        sender: 'user',
+        text: textToSend,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }, offlineMsg]);
+      if (!queryText) setInput('');
+      return;
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       sender: 'user',
@@ -114,7 +132,6 @@ export const AIMentorView: React.FC<AIMentorViewProps> = ({ initialQuery, onOpen
       if (!response.ok) throw new Error('AI service responded with error');
       const data = await response.json();
 
-      // Check if response looks like a study plan
       const hasPlan = textToSend.toLowerCase().includes('plan') || textToSend.toLowerCase().includes('study today');
 
       const aiMessage: ChatMessage = {
@@ -142,6 +159,7 @@ export const AIMentorView: React.FC<AIMentorViewProps> = ({ initialQuery, onOpen
       setLoading(false);
     }
   };
+
 
   const handleAddToPlanner = (msg: ChatMessage) => {
     const todayStr = new Date().toISOString().split('T')[0];
@@ -225,7 +243,7 @@ export const AIMentorView: React.FC<AIMentorViewProps> = ({ initialQuery, onOpen
             </div>
 
             <div
-              className={`max-w-xl p-4 rounded-2xl text-xs leading-relaxed ${
+              className={`max-w-xl p-4 rounded-2xl text-xs leading-relaxed wrap-anywhere ${
                 msg.sender === 'user'
                   ? 'bg-[#5856D6] text-white rounded-tr-none'
                   : 'bg-white dark:bg-[#151519] text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-[#282830] rounded-tl-none shadow-sm'

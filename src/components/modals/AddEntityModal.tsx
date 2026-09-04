@@ -6,14 +6,7 @@ import {
   Users,
   GraduationCap,
   Briefcase,
-  FolderGit2,
-  Calendar,
-  Sparkles,
-  Clock,
-  Link2,
-  Tag,
-  FileText,
-  AlertCircle
+  FolderGit2
 } from 'lucide-react';
 import { usePlacement } from '../../context/PlacementContext';
 import { MASTER_38_NODES } from '../../data/roadmapData';
@@ -213,13 +206,16 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-sm p-0 sm:p-4 transition-opacity" onClick={onClose}>
       <div
-        className="w-full max-w-2xl bg-white dark:bg-[#151519] border border-gray-200 dark:border-[#282830] shadow-2xl rounded-t-2xl sm:rounded-2xl max-h-[92vh] flex flex-col overflow-hidden relative"
+        className="w-full sm:max-w-2xl bg-white dark:bg-[#151519] border border-gray-200 dark:border-[#282830] shadow-2xl rounded-t-2xl sm:rounded-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col overflow-hidden relative pb-[max(12px,env(safe-area-inset-bottom))]"
         onClick={e => e.stopPropagation()}
       >
+        {/* Mobile Drag Indicator Handle */}
+        <div className="w-12 h-1 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto my-2 sm:hidden shrink-0" />
+
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-[#282830] bg-gray-50/50 dark:bg-[#1D1D22]/50 shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-[#282830] bg-gray-50/50 dark:bg-[#1D1D22]/50 shrink-0">
           <div>
             <div className="text-[10px] font-mono font-bold text-[#5856D6] dark:text-[#7A79E0] uppercase tracking-wider mb-0.5">
               NEW ENTRY
@@ -230,14 +226,14 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl border border-gray-200 dark:border-[#282830] text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-xl border border-gray-200 dark:border-[#282830] text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Entity Selector Pills */}
-        <div className="px-6 py-2.5 flex gap-2 overflow-x-auto no-scrollbar border-b border-gray-200 dark:border-[#282830] bg-white dark:bg-[#151519] shrink-0">
+        <div className="px-4 sm:px-6 py-2.5 flex gap-2 overflow-x-auto no-scrollbar border-b border-gray-200 dark:border-[#282830] bg-white dark:bg-[#151519] shrink-0">
           {entityOptions.map(opt => {
             const Icon = opt.icon;
             const isSelected = activeType === opt.id;
@@ -246,13 +242,13 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
                 key={opt.id}
                 type="button"
                 onClick={() => setActiveType(opt.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border min-h-[40px] ${
                   isSelected
                     ? 'bg-[#5856D6] text-white border-transparent shadow-sm'
                     : 'bg-gray-50 dark:bg-[#1D1D22] border-gray-200 dark:border-[#282830] text-gray-600 dark:text-gray-400 hover:border-gray-400'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-4 h-4" />
                 <span>{opt.label}</span>
               </button>
             );
@@ -260,12 +256,12 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1 text-xs">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs">
           {/* 1. STUDY SESSION */}
           {activeType === 'study' && (
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Session Title *
                 </label>
                 <input
@@ -274,17 +270,17 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
                   placeholder="e.g. Java Control Flow & Pattern Loops"
                   value={studyTitle}
                   onChange={e => setStudyTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Category</label>
                   <select
                     value={studyCategory}
                     onChange={e => setStudyCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
                     <option value="Java">Java Syntax & OOP</option>
                     <option value="DSA">DSA (Arrays, Two-Pointers, DP)</option>
@@ -296,47 +292,47 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Duration (minutes)</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Duration (minutes)</label>
                   <input
                     type="number"
                     value={studyDuration}
                     onChange={e => setStudyDuration(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Date</label>
                   <input
                     type="date"
                     value={studyDate}
                     onChange={e => setStudyDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Time</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Time</label>
                   <input
                     type="time"
                     value={studyTime}
                     onChange={e => setStudyTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Link to Roadmap Node (Optional)
+                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                  Roadmap Node (Optional)
                 </label>
                 <select
                   value={studyNodeId}
                   onChange={e => setStudyNodeId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                 >
-                  <option value="">-- No specific roadmap node --</option>
+                  <option value="">-- No specific node --</option>
                   {MASTER_38_NODES.map(node => (
                     <option key={node.id} value={node.id}>
                       {node.id}. {node.title}
@@ -346,13 +342,13 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Notes / Problems Solved</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Notes / Problems Solved</label>
                 <textarea
                   rows={2}
-                  placeholder="e.g. Solved 3 pattern printing problems; analyzed time complexity O(N^2)"
+                  placeholder="e.g. Solved 3 pattern problems; O(N^2) space complexity"
                   value={studyNotes}
                   onChange={e => setStudyNotes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6]"
                 />
               </div>
             </div>
@@ -361,110 +357,97 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           {/* 2. PLACEMENT TEST */}
           {activeType === 'test' && (
             <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Test Name *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Test Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Infosys Aptitude Assessment"
                     value={testName}
                     onChange={e => setTestName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company (Optional)</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Company (Optional)</label>
                   <input
                     type="text"
                     placeholder="e.g. Infosys / TCS / Zoho"
                     value={testCompany}
                     onChange={e => setTestCompany(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Test Type</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Type</label>
                   <select
                     value={testType}
                     onChange={e => setTestType(e.target.value as TestType)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
                     <option value="Aptitude">Aptitude</option>
-                    <option value="Coding">Coding / DSA</option>
+                    <option value="Coding">Coding</option>
                     <option value="Technical MCQ">Technical MCQ</option>
-                    <option value="CS Fundamentals">CS Fundamentals</option>
                     <option value="Company OA">Company OA</option>
-                    <option value="Mock Assessment">Mock Assessment</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Difficulty</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Difficulty</label>
                   <select
                     value={testDifficulty}
                     onChange={e => setTestDifficulty(e.target.value as DifficultyLevel)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
                     <option value="LOW">Low</option>
-                    <option value="MED">Medium</option>
+                    <option value="MED">Med</option>
                     <option value="HIGH">High</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Duration (mins)</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Duration (m)</label>
                   <input
                     type="number"
                     value={testDuration}
                     onChange={e => setTestDuration(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Date</label>
                   <input
                     type="date"
                     value={testDate}
                     onChange={e => setTestDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Start Time</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
                   <input
                     type="time"
                     value={testTime}
                     onChange={e => setTestTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Topics (comma-separated)</label>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Topics</label>
                 <input
                   type="text"
                   placeholder="e.g. Percentages, Ratios, Profit & Loss"
                   value={testTopics}
                   onChange={e => setTestTopics(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Test Portal / Assessment Link</label>
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={testLink}
-                  onChange={e => setTestLink(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                 />
               </div>
             </div>
@@ -473,89 +456,75 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           {/* 3. INTERVIEW */}
           {activeType === 'interview' && (
             <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company Name *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Company Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Razorpay / PhonePe / Google"
                     value={interviewCompany}
                     onChange={e => setInterviewCompany(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Role</label>
                   <input
                     type="text"
                     placeholder="e.g. Software Engineer (Backend)"
                     value={interviewRole}
                     onChange={e => setInterviewRole(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Interview Round</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Round</label>
                   <select
                     value={interviewRound}
                     onChange={e => setInterviewRound(e.target.value as InterviewRound)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
-                    <option value="Technical">Technical Round 1</option>
-                    <option value="Coding">Coding / DSA</option>
-                    <option value="System Design">System Design / LLD</option>
-                    <option value="Behavioral">Behavioral / Googleyness</option>
-                    <option value="HR">HR Interview</option>
-                    <option value="Managerial">Managerial</option>
-                    <option value="Mock Interview">Mock Interview</option>
-                    <option value="Final">Final Round</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Coding">Coding</option>
+                    <option value="System Design">System Design</option>
+                    <option value="Behavioral">Behavioral</option>
+                    <option value="HR">HR</option>
+                    <option value="Mock Interview">Mock</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Date</label>
                   <input
                     type="date"
                     value={interviewDate}
                     onChange={e => setInterviewDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Time</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Time</label>
                   <input
                     type="time"
                     value={interviewTime}
                     onChange={e => setInterviewTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Meeting Link / Google Meet</label>
-                  <input
-                    type="url"
-                    placeholder="https://meet.google.com/..."
-                    value={interviewLink}
-                    onChange={e => setInterviewLink(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Topics Expected</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Java, OOP, Spring Boot, Graphs"
-                    value={interviewTopics}
-                    onChange={e => setInterviewTopics(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Meeting Link / Google Meet</label>
+                <input
+                  type="url"
+                  placeholder="https://meet.google.com/..."
+                  value={interviewLink}
+                  onChange={e => setInterviewLink(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
+                />
               </div>
             </div>
           )}
@@ -563,60 +532,49 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           {/* 4. COLLEGE EXAM */}
           {activeType === 'exam' && (
             <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Exam Name *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Exam Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Semester 7 End Semester Exam"
+                    placeholder="e.g. End Semester Exam"
                     value={examName}
                     onChange={e => setExamName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Subject</label>
                   <input
                     type="text"
-                    placeholder="e.g. Database Management Systems (DBMS)"
+                    placeholder="e.g. DBMS / Operating Systems"
                     value={examSubject}
                     onChange={e => setExamSubject(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Date</label>
                   <input
                     type="date"
                     value={examDate}
                     onChange={e => setExamDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Time</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Time</label>
                   <input
                     type="time"
                     value={examTime}
                     onChange={e => setExamTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Syllabus / Key Units</label>
-                <textarea
-                  rows={2}
-                  placeholder="e.g. Unit 1: Relational Algebra, Unit 2: SQL & Normalization, Unit 3: Concurrency Control"
-                  value={examSyllabus}
-                  onChange={e => setExamSyllabus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
               </div>
             </div>
           )}
@@ -624,40 +582,39 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           {/* 5. JOB APPLICATION */}
           {activeType === 'application' && (
             <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Company *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. PhonePe"
                     value={appCompany}
                     onChange={e => setAppCompany(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Role</label>
                   <input
                     type="text"
                     placeholder="Software Engineer"
                     value={appRole}
                     onChange={e => setAppRole(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
                   <select
                     value={appStatus}
                     onChange={e => setAppStatus(e.target.value as ApplicationStatus)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
                     <option value="wishlist">Wishlist</option>
-                    <option value="researching">Researching</option>
                     <option value="applied">Applied</option>
                     <option value="oa_scheduled">OA Scheduled</option>
                     <option value="interview_scheduled">Interview Scheduled</option>
@@ -666,35 +623,15 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Package (₹ LPA)</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Package (₹ LPA)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={appPackageLPA}
                     onChange={e => setAppPackageLPA(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deadline (Optional)</label>
-                  <input
-                    type="date"
-                    value={appDeadline}
-                    onChange={e => setAppDeadline(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Job Link / Portal URL</label>
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={appJobLink}
-                  onChange={e => setAppJobLink(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
               </div>
             </div>
           )}
@@ -702,64 +639,30 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
           {/* 6. PROJECT */}
           {activeType === 'project' && (
             <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Project Title *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Project Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Distributed Task Management System"
+                    placeholder="e.g. Task Distributed Engine"
                     value={projTitle}
                     onChange={e => setProjTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Roadmap Tier</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Tier</label>
                   <select
                     value={projTier}
                     onChange={e => setProjTier(e.target.value as ProjectTier)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-[#1D1D22] border border-gray-200 dark:border-[#282830] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5856D6] min-h-[44px]"
                   >
-                    <option value="tier1">Tier 1: Beginner Console (Do NOT put on resume)</option>
-                    <option value="tier2">Tier 2: Intermediate REST API (Early resume)</option>
-                    <option value="tier3">Tier 3: Strong Resume (₹15L+ Primary Project)</option>
-                    <option value="tier4">Tier 4: Production Engine (₹23.3L+ Target)</option>
+                    <option value="tier1">Tier 1: Beginner</option>
+                    <option value="tier2">Tier 2: REST API</option>
+                    <option value="tier3">Tier 3: Resume Star (₹15L+)</option>
+                    <option value="tier4">Tier 4: Production Engine (₹23.3L+)</option>
                   </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Technologies Used</label>
-                <input
-                  type="text"
-                  placeholder="Java 21, Spring Boot, PostgreSQL, Docker, Redis"
-                  value={projTech}
-                  onChange={e => setProjTech(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">GitHub Repository Link</label>
-                  <input
-                    type="url"
-                    placeholder="https://github.com/..."
-                    value={projGithub}
-                    onChange={e => setProjGithub(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Live URL / Swagger UI</label>
-                  <input
-                    type="url"
-                    placeholder="https://api..."
-                    value={projLive}
-                    onChange={e => setProjLive(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
                 </div>
               </div>
             </div>
@@ -770,13 +673,13 @@ export const AddEntityModal: React.FC<AddEntityModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-[#282830] hover:bg-gray-100 dark:hover:bg-[#1D1D22] text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#282830] hover:bg-gray-100 dark:hover:bg-[#1D1D22] text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer min-h-[44px]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#5856D6] hover:bg-[#4745B8] active:scale-95 text-white text-xs font-bold transition-all cursor-pointer shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#5856D6] hover:bg-[#4745B8] active:scale-95 text-white text-xs font-bold transition-all cursor-pointer shadow-sm min-h-[44px]"
             >
               Save Entry
             </button>

@@ -218,7 +218,7 @@ export const InterviewsView: React.FC<InterviewsViewProps> = ({
                 key={interview.id}
                 className="p-4 rounded-xl bg-white dark:bg-[#151519] border border-gray-200 dark:border-[#282830] hover:border-[#AF52DE]/40 transition-all border-l-4 border-l-[#AF52DE] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
-                <div className="min-w-0">
+                <div className="min-w-0 wrap-anywhere">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#AF52DE]/15 text-[#AF52DE]">
                       {interview.round}
@@ -229,7 +229,7 @@ export const InterviewsView: React.FC<InterviewsViewProps> = ({
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white wrap-anywhere">
                     {interview.company} • {interview.role}
                   </h3>
 

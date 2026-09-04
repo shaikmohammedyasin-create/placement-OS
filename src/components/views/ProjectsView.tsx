@@ -141,11 +141,11 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ onOpenAddModal }) =>
                   </button>
                 </div>
 
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white wrap-anywhere">
                   {proj.title}
                 </h3>
 
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 wrap-anywhere">
                   {proj.notes || 'Full production backend architecture with database optimization.'}
                 </p>
 
