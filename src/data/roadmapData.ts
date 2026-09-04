@@ -1,7 +1,7 @@
 // Tech Placement Dependency Graph - Primary Source of Truth
 // Read-only reference data extracted directly from official placement strategy specifications
 
-import { RoadmapNode, StrictStep, PriorityLevel, DifficultyLevel } from '../types';
+import { RoadmapNode, StrictStep, PriorityLevel, DifficultyLevel, BingoItem, ReadinessGate } from '../types';
 
 export const MASTER_38_NODES: RoadmapNode[] = [
   {
@@ -1059,3 +1059,420 @@ export const READINESS_SCORECARD_SPECS = {
     milestones: ["Percentages & Ratios in <60s", "Time & Work / Speed & Distance mastered", "Mock tests consistency >80%", "Speed drill streak"]
   }
 };
+
+// ============================================================================
+// CAREER BLUEPRINT: 3 TIERED TARGET PATHS (Barbell Strategy)
+// ============================================================================
+export const CAREER_TARGET_PATHS = [
+  {
+    id: 'PATH_A_SAFETY',
+    name: 'Path A: Baseline Security (Barbell Safety)',
+    targetPackage: '₹5 – 8 LPA',
+    archetype: 'Mass / Service / Mid-Tier MNCs (TCS Digital, Infosys, Cognizant, Wipro, Zoho)',
+    role: 'Associate Software Engineer / Systems Engineer',
+    dsaScope: 'Easy-to-Medium Arrays, Strings, HashMaps, Two Pointers',
+    projectScope: 'Solid LearnHub or VBCUA backend CRUD, clear explanation',
+    aptitudeScope: 'Critical Filter (Percentages, Ratios, Speed-Distance drills)',
+    coreFocus: 'Guaranteed safety net before aggressive product chasing'
+  },
+  {
+    id: 'PATH_B_STRONG',
+    name: 'Path B: Strong Product / GCC Track',
+    targetPackage: '₹10 – 20 LPA',
+    archetype: 'Product Companies, Fast-Growing Startups, Global Capability Centers (GCCs)',
+    role: 'Software Development Engineer I (SDE-1)',
+    dsaScope: 'Trees, BST, Heaps, Monotonic Stacks, BFS/DFS, 1D Dynamic Programming',
+    projectScope: 'LearnHub / VBCUA with Redis caching, PostgreSQL indexes, Docker deployment',
+    aptitudeScope: 'Product OA clearance + LLD SOLID pattern design',
+    coreFocus: 'High-probability sweet spot with strong engineering upside'
+  },
+  {
+    id: 'PATH_C_AMBITIOUS',
+    name: 'Path C: Ambitious / Google-Tier (Barbell Upside)',
+    targetPackage: '₹23.3 – 50 LPA+',
+    archetype: 'Google L3 SWE, Premium Unicorns (Razorpay, PhonePe, CRED, Uber, Atlassian)',
+    role: 'Software Engineer L3 / Backend Engineer',
+    dsaScope: 'Disguised Graph patterns, 2D DP, Tries, DSU, Topological Sort in Google Docs',
+    projectScope: 'Defensible real-time scalable engine + Deep concurrency & distributed trade-offs',
+    aptitudeScope: 'STAR-L Googleyness, vocal complexity proof, plain text coding under stress',
+    coreFocus: 'Top-tier upside; zero tech bloat, relentless engineering depth'
+  }
+];
+
+// ============================================================================
+// CAREER BLUEPRINT: READINESS GATES 1–5 (Empirical Milestone Proofs)
+// ============================================================================
+export const READINESS_GATES: ReadinessGate[] = [
+  {
+    id: 'gate1',
+    gateNumber: 1,
+    name: 'Gate 1: Campus OAs & Startup Screening',
+    targetTier: '₹5 – 8 LPA Baseline',
+    status: 'IN_PROGRESS',
+    unlocksDescription: 'Clears high-cutoff aptitude screening and baseline coding tests.',
+    requirements: [
+      {
+        id: 'g1_apt',
+        label: 'Aptitude Accuracy',
+        targetMetric: '>= 75% in 3 consecutive timed tests',
+        currentMetric: 'Baseline drills ongoing',
+        isSatisfied: false,
+        whyItMatters: '80% of applicants eliminated at aptitude filter.'
+      },
+      {
+        id: 'g1_syntax',
+        label: 'Java Plain-Text Syntax',
+        targetMetric: 'Zero syntax errors on array & string manipulation',
+        currentMetric: 'Verified in console drills',
+        isSatisfied: true,
+        whyItMatters: 'Must code without IDE auto-complete crutches.'
+      },
+      {
+        id: 'g1_resume',
+        label: '1-Page ATS Resume',
+        targetMetric: 'Jake\'s Resume template with clean typography',
+        currentMetric: 'Drafted in single-column format',
+        isSatisfied: true,
+        whyItMatters: 'Multicolumn / graphical resumes fail ATS scanners.'
+      }
+    ]
+  },
+  {
+    id: 'gate2',
+    gateNumber: 2,
+    name: 'Gate 2: Decent Product Companies & GCCs',
+    targetTier: '₹10 – 15 LPA',
+    status: 'LOCKED',
+    unlocksDescription: 'Unlocks mid-tier product interviews and GCC technical rounds.',
+    requirements: [
+      {
+        id: 'g2_dsa',
+        label: 'Core DSA Pattern Fluency',
+        targetMetric: '80+ Easy/Medium (Two Pointers, Sliding Window, Trees, Stacks)',
+        currentMetric: 'In progress',
+        isSatisfied: false,
+        whyItMatters: 'Standard technical interview problem scope.'
+      },
+      {
+        id: 'g2_db',
+        label: 'DBMS & ACID Concurrency',
+        targetMetric: 'Explain Normalization (1NF–3NF), Indexing, and Isolation levels',
+        currentMetric: 'Under review',
+        isSatisfied: false,
+        whyItMatters: 'Tested heavily in mid-tier backend technical rounds.'
+      },
+      {
+        id: 'g2_proj',
+        label: 'Working Project (LearnHub / VBCUA)',
+        targetMetric: 'REST API live on public URL + GitHub documentation',
+        currentMetric: 'LearnHub repository live',
+        isSatisfied: true,
+        whyItMatters: 'Interviewer inspects real code, not tutorial clones.'
+      }
+    ]
+  },
+  {
+    id: 'gate3',
+    gateNumber: 3,
+    name: 'Gate 3: Strong Product Unicorns',
+    targetTier: '₹15 – 20 LPA',
+    status: 'LOCKED',
+    unlocksDescription: 'Unlocks top Indian product unicorns (Swiggy, Zomato, Groww, Meesho).',
+    requirements: [
+      {
+        id: 'g3_dsa',
+        label: 'Graph & DP Mastery',
+        targetMetric: 'Kahn\'s algorithm, Dijkstra, 1D & 2D Knapsack DP',
+        currentMetric: 'Not started',
+        isSatisfied: false,
+        whyItMatters: 'Mandatory filter for product unicorn OAs.'
+      },
+      {
+        id: 'g3_lld',
+        label: 'Low-Level Design (LLD)',
+        targetMetric: 'Apply SOLID & design Parking Lot / Elevator System',
+        currentMetric: 'Theory reviewed',
+        isSatisfied: false,
+        whyItMatters: 'Distinguishes junior coders from software engineers.'
+      },
+      {
+        id: 'g3_defensibility',
+        label: 'Project Defensibility Checklist',
+        targetMetric: '7/7 Defensibility check on LearnHub / VBCUA',
+        currentMetric: '5/7 verified',
+        isSatisfied: false,
+        whyItMatters: 'Must justify all architectural trade-offs under interrogation.'
+      }
+    ]
+  },
+  {
+    id: 'gate4',
+    gateNumber: 4,
+    name: 'Gate 4: Premium Unicorn Tier',
+    targetTier: '₹20 – 25 LPA',
+    status: 'LOCKED',
+    unlocksDescription: 'Unlocks Razorpay, PhonePe, CRED, and Atlassian interview conversion.',
+    requirements: [
+      {
+        id: 'g4_concurrency',
+        label: 'Backend Concurrency & Redis',
+        targetMetric: 'Cache-aside, distributed locks, database indexing tuning',
+        currentMetric: 'Redis caching implemented',
+        isSatisfied: true,
+        whyItMatters: 'Demonstrates handling real-world production load.'
+      },
+      {
+        id: 'g4_starl',
+        label: 'STAR-L Behavioral Mastery',
+        targetMetric: '5 authentic stories (Ambiguity, Conflict, Failure/Pivot)',
+        currentMetric: '3 stories drafted',
+        isSatisfied: false,
+        whyItMatters: 'Behavioral red flags result in immediate veto.'
+      }
+    ]
+  },
+  {
+    id: 'gate5',
+    gateNumber: 5,
+    name: 'Gate 5: Google L3 SWE / Elite Tech',
+    targetTier: '₹25L – 50 LPA+ Google L3',
+    status: 'LOCKED',
+    unlocksDescription: 'Google L3 SWE offer letter conversion.',
+    requirements: [
+      {
+        id: 'g5_plaintext',
+        label: 'Google Docs 25-Min Plaintext Coding',
+        targetMetric: 'Medium/Hard LeetCode in plain text while thinking aloud',
+        currentMetric: 'Practice required',
+        isSatisfied: false,
+        whyItMatters: 'Google tests strictly in Google Docs without compiler crutches.'
+      },
+      {
+        id: 'g5_googleyness',
+        label: 'Googleyness & Intellectual Humility',
+        targetMetric: 'Demonstrated data-driven pivots & feedback reception',
+        currentMetric: 'Rubric mapped',
+        isSatisfied: false,
+        whyItMatters: 'Culture fit has equal veto power to coding rounds.'
+      }
+    ]
+  }
+];
+
+// ============================================================================
+// CAREER BINGO CARD PRIORITY MODEL (P0 to P5 from Blueprint)
+// ============================================================================
+export const CAREER_BINGO_ITEMS: BingoItem[] = [
+  // P0: Must Have / Non-Negotiable
+  {
+    id: 'bingo_p0_java',
+    title: 'Singular Java Enterprise Focus',
+    priority: 'P0',
+    category: 'TECHNICAL',
+    whyItMatters: 'Bridges DSA problem solving and enterprise backend jobs in India.',
+    completionCriteria: 'Committed to Java as sole enterprise language; no distraction languages.',
+    status: 'completed',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p0_aptitude',
+    title: 'Daily 30-Min Aptitude Speed Drills',
+    priority: 'P0',
+    category: 'TECHNICAL',
+    whyItMatters: 'Primary screening mechanism for 80% of Indian campus placement drives.',
+    completionCriteria: '30 minutes daily drills on percentages, ratios, and time-distance.',
+    status: 'in_progress',
+    linkedView: 'planner'
+  },
+  {
+    id: 'bingo_p0_dsa_core',
+    title: 'Core DSA Two-Pointers & Sliding Window',
+    priority: 'P0',
+    category: 'TECHNICAL',
+    whyItMatters: 'Foundation for 60% of all technical coding rounds.',
+    completionCriteria: 'Solved 30+ array and string sliding window problems independently.',
+    status: 'in_progress',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p0_resume',
+    title: '1-Page ATS Jake\'s Resume',
+    priority: 'P0',
+    category: 'CAREER_EXECUTION',
+    whyItMatters: 'Eliminates 70% of candidate rejections before recruiter ever reads it.',
+    completionCriteria: 'Single-page, single-column, action verbs, no Canva tables or graphics.',
+    status: 'completed',
+    linkedView: 'applications'
+  },
+  {
+    id: 'bingo_p0_starl',
+    title: '5 STAR-L Behavioral Stories Formulated',
+    priority: 'P0',
+    category: 'INTERVIEW',
+    whyItMatters: 'Googleyness and behavioral rounds carry equal veto power.',
+    completionCriteria: '5 documented stories covering Ambiguity, Humility, Conflict, and Failure.',
+    status: 'in_progress',
+    linkedView: 'interviews'
+  },
+
+  // P1: High Value / Core Product
+  {
+    id: 'bingo_p1_learnhub',
+    title: 'LearnHub 7/7 Defensibility Mastered',
+    priority: 'P1',
+    category: 'PROOF_OF_WORK',
+    whyItMatters: 'Primary project proving real-world backend engineering capability.',
+    completionCriteria: 'Passes all 7 defensibility checks (5-min walk, tech choices, scaling, failures).',
+    status: 'in_progress',
+    linkedView: 'projects'
+  },
+  {
+    id: 'bingo_p1_vbcua',
+    title: 'VBCUA Real-Time Architecture Deployed',
+    priority: 'P1',
+    category: 'PROOF_OF_WORK',
+    whyItMatters: 'Secondary flagship showing WebSocket real-time handling and geospatial query.',
+    completionCriteria: 'Live URL + GitHub README with architecture diagram and live demo.',
+    status: 'in_progress',
+    linkedView: 'projects'
+  },
+  {
+    id: 'bingo_p1_graphs',
+    title: 'Graph Traversal & Dijkstra in Java',
+    priority: 'P1',
+    category: 'TECHNICAL',
+    whyItMatters: 'Peak filter for Tier-1 product companies and Google L3 interviews.',
+    completionCriteria: 'Codes BFS, DFS, Topological sort, and Dijkstra from memory.',
+    status: 'not_started',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p1_thinkaloud',
+    title: 'Thinking-Aloud Vocal Coding Practice',
+    priority: 'P1',
+    category: 'INTERVIEW',
+    whyItMatters: 'Silent coding is an instant fail in top product interviews.',
+    completionCriteria: 'Logged 5+ mock sessions narrating complexity & constraints verbally.',
+    status: 'not_started',
+    linkedView: 'interviews'
+  },
+  {
+    id: 'bingo_p1_funnel',
+    title: '50+ Active Placement Applications Pipeline',
+    priority: 'P1',
+    category: 'CAREER_EXECUTION',
+    whyItMatters: 'Secures pipeline volume to guarantee placement conversion.',
+    completionCriteria: '50+ companies logged with mandatory next action & follow-up dates.',
+    status: 'not_started',
+    linkedView: 'applications'
+  },
+
+  // P2: Important / System & Network
+  {
+    id: 'bingo_p2_lld',
+    title: 'Low-Level Design (Parking Lot / SOLID)',
+    priority: 'P2',
+    category: 'TECHNICAL',
+    whyItMatters: 'Separates basic coders from ₹15L–20L+ software engineers.',
+    completionCriteria: 'Designs modular OOP systems using Factory, Singleton, Strategy patterns.',
+    status: 'not_started',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p2_alumni',
+    title: 'Alumni & Senior Networking CRM',
+    priority: 'P2',
+    category: 'CAREER_EXECUTION',
+    whyItMatters: 'Referrals bypass standard ATS resume filters with 5x higher call rates.',
+    completionCriteria: 'Connected with 10+ alumni/seniors across Google, Razorpay, and product MNCs.',
+    status: 'in_progress',
+    linkedView: 'applications'
+  },
+  {
+    id: 'bingo_p2_failure_loop',
+    title: 'Continuous Failure Feedback Loop',
+    priority: 'P2',
+    category: 'STRATEGY',
+    whyItMatters: 'Converts failed OAs and mock interviews into immediate study fixes.',
+    completionCriteria: 'Logs root causes and next fix actions for every failed assessment.',
+    status: 'in_progress',
+    linkedView: 'progress'
+  },
+  {
+    id: 'bingo_p2_dp',
+    title: 'Dynamic Programming 1D & 2D Knapsack',
+    priority: 'P2',
+    category: 'TECHNICAL',
+    whyItMatters: 'Standard OA differentiator for high package bands.',
+    completionCriteria: 'Solves 20+ memoization & tabulation DP problems independently.',
+    status: 'not_started',
+    linkedView: 'roadmap'
+  },
+
+  // P3: Useful / Good to Have
+  {
+    id: 'bingo_p3_docker',
+    title: 'Docker Containerization & Render Deploy',
+    priority: 'P3',
+    category: 'TECHNICAL',
+    whyItMatters: 'Ensures reproducible deployments and live public demo endpoints.',
+    completionCriteria: 'Dockerfile written and deployed on Render / AWS EC2.',
+    status: 'completed',
+    linkedView: 'projects'
+  },
+  {
+    id: 'bingo_p3_linkedin',
+    title: 'LinkedIn Clean-up & Keyword Alignment',
+    priority: 'P3',
+    category: 'PROFESSIONAL',
+    whyItMatters: 'Recruiter outbound discovery for off-campus drives.',
+    completionCriteria: 'Headline, about section, GitHub links, and Jake\'s resume alignment complete.',
+    status: 'in_progress',
+    linkedView: 'applications'
+  },
+
+  // P4: Later / Defer
+  {
+    id: 'bingo_p4_hld',
+    title: 'High-Level System Design (HLD)',
+    priority: 'P4',
+    category: 'STRATEGY',
+    whyItMatters: 'Useful for senior roles; freshers need depth in DSA and LLD first.',
+    completionCriteria: 'Study only after Gate 3 is satisfied.',
+    status: 'deferred',
+    linkedView: 'roadmap'
+  },
+
+  // P5: Distraction / Zero Tolerance Bloat
+  {
+    id: 'bingo_p5_multilang',
+    title: 'Multi-Language Bloat (Python/C++/Rust)',
+    priority: 'P5',
+    category: 'STRATEGY',
+    whyItMatters: 'Switching languages destroys mastery and slows down interview readiness.',
+    completionCriteria: 'Zero tolerance: Stick exclusively to Java enterprise backend.',
+    status: 'completed',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p5_ml_ai',
+    title: 'AI/ML Shiny Toy Projects',
+    priority: 'P5',
+    category: 'STRATEGY',
+    whyItMatters: 'Massive time sink with negligible ROI for general software engineering interviews.',
+    completionCriteria: 'Do not train toy AI models; invest time in DSA and backend concurrency.',
+    status: 'completed',
+    linkedView: 'roadmap'
+  },
+  {
+    id: 'bingo_p5_frontend_frameworks',
+    title: 'Frontend Framework Rabbit Holes',
+    priority: 'P5',
+    category: 'STRATEGY',
+    whyItMatters: 'Frontend knowledge has low ROI for ₹20L+ backend software engineering roles.',
+    completionCriteria: 'Keep frontend minimal; do not spend weeks learning React/Vue internals.',
+    status: 'completed',
+    linkedView: 'roadmap'
+  }
+];
+

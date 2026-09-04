@@ -6,7 +6,10 @@ import {
   PlacementTest,
   PlacementInterview,
   ManifestationProfile,
-  DailyFocusState
+  DailyFocusState,
+  NetworkContact,
+  FailureLog,
+  BingoItem
 } from '../types';
 
 // Read env variables (supporting VITE_ prefix)
@@ -44,14 +47,19 @@ export async function dbFetchEvents(): Promise<PlannerEvent[] | null> {
       eventType: row.event_type,
       date: row.date,
       startTime: row.start_time,
+      endTime: row.end_time,
       durationMinutes: row.duration_minutes || 60,
+      company: row.company,
+      role: row.role,
       category: row.category || 'General',
       status: row.status || 'scheduled',
+      priority: row.priority,
       link: row.link,
       location: row.location,
       notes: row.notes,
       roadmapNodeId: row.roadmap_node_id,
-      createdAt: row.created_at
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
     }));
   } catch (e) {
     console.warn('Supabase fetch events exception:', e);
@@ -68,9 +76,13 @@ export async function dbSaveEvent(event: PlannerEvent): Promise<boolean> {
       event_type: event.eventType,
       date: event.date,
       start_time: event.startTime || null,
+      end_time: event.endTime || null,
       duration_minutes: event.durationMinutes || 60,
+      company: event.company || null,
+      role: event.role || null,
       category: event.category,
       status: event.status,
+      priority: event.priority || null,
       link: event.link || null,
       location: event.location || null,
       notes: event.notes || null,
@@ -121,15 +133,20 @@ export async function dbFetchApplications(): Promise<JobApplication[] | null> {
       id: row.id,
       company: row.company,
       role: row.role,
+      channel: row.channel || 'Campus',
       applicationDate: row.application_date,
       deadline: row.deadline,
+      resumeVersion: row.resume_version,
       status: row.status,
       jobLink: row.job_link,
-      packageLPA: row.package_lpa ? Number(row.package_lpa) : 23.3,
+      packageLPA: row.package_lpa ? Number(row.package_lpa) : 15,
       referral: row.referral,
       oaDate: row.oa_date,
       interviewDate: row.interview_date,
       currentStage: row.current_stage,
+      nextAction: row.next_action,
+      followUpDate: row.follow_up_date,
+      isInternship: Boolean(row.is_internship),
       notes: row.notes,
       createdAt: row.created_at
     }));
@@ -145,15 +162,20 @@ export async function dbSaveApplication(app: JobApplication): Promise<boolean> {
       id: app.id,
       company: app.company,
       role: app.role,
+      channel: app.channel || 'Campus',
       application_date: app.applicationDate,
       deadline: app.deadline || null,
+      resume_version: app.resumeVersion || null,
       status: app.status,
       job_link: app.jobLink || null,
-      package_lpa: app.packageLPA || 23.3,
+      package_lpa: app.packageLPA || 15,
       referral: app.referral || null,
       oa_date: app.oaDate || null,
       interview_date: app.interviewDate || null,
       current_stage: app.currentStage || null,
+      next_action: app.nextAction || null,
+      follow_up_date: app.followUpDate || null,
+      is_internship: Boolean(app.isInternship),
       notes: app.notes || null,
       created_at: app.createdAt || new Date().toISOString()
     };
@@ -196,12 +218,24 @@ export async function dbFetchProjects(): Promise<UserProject[] | null> {
       title: row.title,
       tier: row.tier,
       tierLabel: row.tier_label,
+      isFlagship: Boolean(row.is_flagship),
       technologies: Array.isArray(row.technologies) ? row.technologies : [],
       status: row.status,
       githubUrl: row.github_url,
       liveUrl: row.live_url,
       features: Array.isArray(row.features) ? row.features : [],
       deployment: row.deployment,
+      hasReadme: row.has_readme !== false,
+      hasTests: Boolean(row.has_tests),
+      defensibility: row.defensibility || {
+        canExplainIn5Min: true,
+        canExplainEveryTechChoice: true,
+        canExplainArchitecture: true,
+        canExplainTradeoffs: true,
+        canExplainFailureHandling: false,
+        canExplainDeployment: false,
+        canExplainScaling: false
+      },
       resumeStatus: row.resume_status,
       notes: row.notes,
       createdAt: row.created_at
@@ -219,12 +253,16 @@ export async function dbSaveProject(proj: UserProject): Promise<boolean> {
       title: proj.title,
       tier: proj.tier,
       tier_label: proj.tierLabel || null,
+      is_flagship: Boolean(proj.isFlagship),
       technologies: proj.technologies || [],
       status: proj.status,
       github_url: proj.githubUrl || null,
       live_url: proj.liveUrl || null,
       features: proj.features || [],
       deployment: proj.deployment || null,
+      has_readme: proj.hasReadme !== false,
+      has_tests: Boolean(proj.hasTests),
+      defensibility: proj.defensibility || {},
       resume_status: proj.resumeStatus || null,
       notes: proj.notes || null,
       created_at: proj.createdAt || new Date().toISOString()
@@ -251,7 +289,151 @@ export async function dbDeleteProject(id: string): Promise<boolean> {
 }
 
 /**
- * 4. TEST RESULTS (Structured post-test scores linked to events)
+ * 4. NETWORK CONTACTS
+ */
+export async function dbFetchNetworkContacts(): Promise<NetworkContact[] | null> {
+  if (!supabase) return null;
+  try {
+    const { data, error } = await supabase
+      .from('network_contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) return null;
+
+    return (data || []).map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      company: row.company,
+      role: row.role,
+      connectionType: row.connection_type,
+      dateContacted: row.date_contacted,
+      lastContact: row.last_contact,
+      nextAction: row.next_action,
+      followUpDate: row.follow_up_date,
+      status: row.status,
+      notes: row.notes,
+      linkedInUrl: row.linkedin_url,
+      email: row.email,
+      createdAt: row.created_at
+    }));
+  } catch {
+    return null;
+  }
+}
+
+export async function dbSaveNetworkContact(contact: NetworkContact): Promise<boolean> {
+  if (!supabase) return false;
+  try {
+    const payload = {
+      id: contact.id,
+      name: contact.name,
+      company: contact.company,
+      role: contact.role,
+      connection_type: contact.connectionType,
+      date_contacted: contact.dateContacted || null,
+      last_contact: contact.lastContact || null,
+      next_action: contact.nextAction || null,
+      follow_up_date: contact.followUpDate || null,
+      status: contact.status,
+      notes: contact.notes || null,
+      linkedin_url: contact.linkedInUrl || null,
+      email: contact.email || null,
+      created_at: contact.createdAt || new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('network_contacts')
+      .upsert(payload, { onConflict: 'id' });
+
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function dbDeleteNetworkContact(id: string): Promise<boolean> {
+  if (!supabase) return false;
+  try {
+    const { error } = await supabase.from('network_contacts').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 5. FAILURE LOGS
+ */
+export async function dbFetchFailureLogs(): Promise<FailureLog[] | null> {
+  if (!supabase) return null;
+  try {
+    const { data, error } = await supabase
+      .from('failure_logs')
+      .select('*')
+      .order('logged_date', { ascending: false });
+
+    if (error) return null;
+
+    return (data || []).map((row: any) => ({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      sourceType: row.source_type,
+      sourceId: row.source_id,
+      companyOrContext: row.company_or_context,
+      rootCause: row.root_cause,
+      nextFixAction: row.next_fix_action,
+      status: row.status,
+      loggedDate: row.logged_date,
+      resolvedDate: row.resolved_date,
+      createdAt: row.created_at
+    }));
+  } catch {
+    return null;
+  }
+}
+
+export async function dbSaveFailureLog(log: FailureLog): Promise<boolean> {
+  if (!supabase) return false;
+  try {
+    const payload = {
+      id: log.id,
+      title: log.title,
+      category: log.category,
+      source_type: log.sourceType,
+      source_id: log.sourceId || null,
+      company_or_context: log.companyOrContext || null,
+      root_cause: log.rootCause,
+      next_fix_action: log.nextFixAction,
+      status: log.status,
+      logged_date: log.loggedDate,
+      resolved_date: log.resolvedDate || null,
+      created_at: log.createdAt || new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('failure_logs')
+      .upsert(payload, { onConflict: 'id' });
+
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function dbDeleteFailureLog(id: string): Promise<boolean> {
+  if (!supabase) return false;
+  try {
+    const { error } = await supabase.from('failure_logs').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 6. TEST RESULTS
  */
 export async function dbSaveTestResult(testResult: any): Promise<boolean> {
   if (!supabase) return false;
@@ -262,13 +444,13 @@ export async function dbSaveTestResult(testResult: any): Promise<boolean> {
       test_name: testResult.testName,
       company: testResult.company || null,
       test_type: testResult.testType,
-      score: testResult.score ?? null,
-      max_score: testResult.maxScore ?? null,
-      percentage: testResult.percentage ?? null,
-      questions_count: testResult.questionsCount ?? null,
-      correct_count: testResult.correctCount ?? null,
-      incorrect_count: testResult.incorrectCount ?? null,
-      skipped_count: testResult.skippedCount ?? null,
+      score: testResult.score || null,
+      max_score: testResult.maxScore || null,
+      percentage: testResult.percentage || null,
+      questions_count: testResult.questionsCount || null,
+      correct_count: testResult.correctCount || null,
+      incorrect_count: testResult.incorrectCount || null,
+      skipped_count: testResult.skippedCount || null,
       weak_topics: testResult.weakTopics || [],
       test_mistakes_notes: testResult.testMistakesNotes || null,
       created_at: testResult.createdAt || new Date().toISOString()
@@ -281,7 +463,7 @@ export async function dbSaveTestResult(testResult: any): Promise<boolean> {
 }
 
 /**
- * 5. INTERVIEW NOTES (Structured interview feedback linked to events)
+ * 7. INTERVIEW NOTES
  */
 export async function dbSaveInterviewNotes(interviewNote: any): Promise<boolean> {
   if (!supabase) return false;
@@ -301,6 +483,7 @@ export async function dbSaveInterviewNotes(interviewNote: any): Promise<boolean>
       lessons: interviewNote.lessons || null,
       next_action: interviewNote.nextAction || null,
       verdict: interviewNote.verdict || 'Pending',
+      mock_score: interviewNote.mockScore || null,
       created_at: interviewNote.createdAt || new Date().toISOString()
     };
     const { error } = await supabase.from('interview_notes').upsert(payload, { onConflict: 'id' });
@@ -311,7 +494,7 @@ export async function dbSaveInterviewNotes(interviewNote: any): Promise<boolean>
 }
 
 /**
- * 6. USER SETTINGS (Profile, targets, progress, daily focus, manifestation)
+ * 8. USER SETTINGS
  */
 export async function dbFetchUserSettings(): Promise<any | null> {
   if (!supabase) return null;
@@ -337,6 +520,7 @@ export async function dbSaveUserSettings(settings: {
   manifestation?: ManifestationProfile;
   nodeProgress?: any;
   dailyFocus?: DailyFocusState;
+  bingoProgress?: any;
 }): Promise<boolean> {
   if (!supabase) return false;
   try {
@@ -352,6 +536,7 @@ export async function dbSaveUserSettings(settings: {
     if (settings.manifestation !== undefined) payload.manifestation = settings.manifestation;
     if (settings.nodeProgress !== undefined) payload.node_progress = settings.nodeProgress;
     if (settings.dailyFocus !== undefined) payload.daily_focus = settings.dailyFocus;
+    if (settings.bingoProgress !== undefined) payload.bingo_progress = settings.bingoProgress;
 
     const { error } = await supabase
       .from('user_settings')

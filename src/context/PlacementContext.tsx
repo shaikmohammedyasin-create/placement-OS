@@ -9,7 +9,9 @@ import {
   ManifestationProfile,
   DailyCheckin,
   DailyFocusState,
-  AIMessage,
+  NetworkContact,
+  FailureLog,
+  BingoItem,
   ReadinessDimension,
   ReadinessStatus
 } from '../types';
@@ -26,6 +28,12 @@ import {
   dbDeleteProject,
   dbSaveTestResult,
   dbSaveInterviewNotes,
+  dbFetchNetworkContacts,
+  dbSaveNetworkContact,
+  dbDeleteNetworkContact,
+  dbFetchFailureLogs,
+  dbSaveFailureLog,
+  dbDeleteFailureLog,
   dbFetchUserSettings,
   dbSaveUserSettings
 } from '../lib/supabase';
@@ -94,6 +102,22 @@ interface PlacementContextType {
   dailyCheckins: DailyCheckin[];
   addDailyCheckin: (checkin: Omit<DailyCheckin, 'id'>) => void;
 
+  // Network Contacts
+  networkContacts: NetworkContact[];
+  addNetworkContact: (contact: Omit<NetworkContact, 'id' | 'createdAt'>) => NetworkContact;
+  updateNetworkContact: (id: string, updates: Partial<NetworkContact>) => void;
+  deleteNetworkContact: (id: string) => void;
+
+  // Failure Logs
+  failureLogs: FailureLog[];
+  addFailureLog: (log: Omit<FailureLog, 'id' | 'createdAt'>) => FailureLog;
+  updateFailureLog: (id: string, updates: Partial<FailureLog>) => void;
+  deleteFailureLog: (id: string) => void;
+
+  // Bingo Progress
+  bingoProgress: Record<string, 'not_started' | 'in_progress' | 'completed' | 'deferred'>;
+  updateBingoProgress: (itemId: string, status: 'not_started' | 'in_progress' | 'completed' | 'deferred') => void;
+
   // AI Chat
   aiMessages: AIMessage[];
   addAIMessage: (msg: Omit<AIMessage, 'id' | 'timestamp'>) => void;
@@ -127,6 +151,9 @@ const STORAGE_KEYS = {
   PROJECTS: 'pos_projects',
   MANIFESTATION: 'pos_manifestation',
   DAILY_CHECKINS: 'pos_daily_checkins',
+  NETWORK_CONTACTS: 'pos_network_contacts',
+  FAILURE_LOGS: 'pos_failure_logs',
+  BINGO_PROGRESS: 'pos_bingo_progress',
   AI_MESSAGES: 'pos_ai_messages'
 };
 
@@ -253,9 +280,133 @@ export const PlacementProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [projects, setProjects] = useState<UserProject[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+      if (saved && JSON.parse(saved).length > 0) return JSON.parse(saved);
+      // Seed default user projects from Career Blueprint
+      return [
+        {
+          id: 'proj_learnhub',
+          title: 'LearnHub — High-Throughput Interactive Learning Platform',
+          tier: 'tier3',
+          tierLabel: 'Tier 3 — Production Star Project',
+          isFlagship: true,
+          technologies: ['Java', 'Spring Boot', 'PostgreSQL', 'Redis', 'Docker'],
+          status: 'In Progress',
+          githubUrl: 'https://github.com/imohammedyasin05/learnhub',
+          liveUrl: 'https://learnhub.preview.dev',
+          features: [
+            'JWT stateless auth with role-based access control',
+            'Redis cache-aside for high-concurrency course queries',
+            'PostgreSQL relational schema with optimized composite indexes',
+            'REST API with automated Swagger OpenAPI documentation'
+          ],
+          deployment: 'Docker / Render / AWS EC2',
+          hasReadme: true,
+          hasTests: true,
+          defensibility: {
+            canExplainIn5Min: true,
+            canExplainEveryTechChoice: true,
+            canExplainArchitecture: true,
+            canExplainTradeoffs: true,
+            canExplainFailureHandling: true,
+            canExplainDeployment: true,
+            canExplainScaling: true
+          },
+          resumeStatus: 'Primary Campus Project',
+          notes: 'Key talking points: explain why Redis caching was selected over in-memory cache and how DB connection pooling was tuned.',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 'proj_vbcua',
+          title: 'VBCUA — Vehicle Breakdown & Emergency Assistance Engine',
+          tier: 'tier3',
+          tierLabel: 'Tier 3 — Production Star Project',
+          isFlagship: true,
+          technologies: ['Java', 'Spring Boot', 'PostgreSQL', 'WebSockets', 'Google Maps API'],
+          status: 'In Progress',
+          githubUrl: 'https://github.com/imohammedyasin05/vbcua',
+          liveUrl: 'https://vbcua.preview.dev',
+          features: [
+            'Real-time mechanic dispatch with geospatial radius query',
+            'WebSocket live communication for location broadcast',
+            'ACID transaction guarantees for emergency service booking',
+            'Deadlock prevention and thread synchronization under load'
+          ],
+          deployment: 'Docker / Render',
+          hasReadme: true,
+          hasTests: true,
+          defensibility: {
+            canExplainIn5Min: true,
+            canExplainEveryTechChoice: true,
+            canExplainArchitecture: true,
+            canExplainTradeoffs: true,
+            canExplainFailureHandling: true,
+            canExplainDeployment: true,
+            canExplainScaling: false
+          },
+          resumeStatus: 'Production Star Project',
+          notes: 'Focus on explaining the real-time WebSocket protocol and geospatial querying trade-offs.',
+          createdAt: new Date().toISOString()
+        }
+      ];
+    } catch {
+      return [];
+    }
+  });
+
+  // Network Contacts
+  const [networkContacts, setNetworkContacts] = useState<NetworkContact[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.NETWORK_CONTACTS);
+      if (saved && JSON.parse(saved).length > 0) return JSON.parse(saved);
+      return [
+        {
+          id: 'nc_1',
+          name: 'Priya Sharma',
+          company: 'Google',
+          role: 'SWE II (L4)',
+          connectionType: 'Alumni',
+          dateContacted: getTodayString(),
+          status: 'Conversation',
+          nextAction: 'Send updated Jake\'s resume and ask for Google L3 referral',
+          followUpDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+          notes: 'College senior from 2024 batch. Encouraged plain text coding practice.',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 'nc_2',
+          name: 'Rohit Verma',
+          company: 'Razorpay',
+          role: 'Backend SDE-2',
+          connectionType: 'Senior',
+          status: 'Contacted',
+          nextAction: 'Follow up on Spring Boot & Redis discussion',
+          followUpDate: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
+          notes: 'Connected via LinkedIn. Recommended focusing on LLD & concurrency.',
+          createdAt: new Date().toISOString()
+        }
+      ];
+    } catch {
+      return [];
+    }
+  });
+
+  // Failure Logs
+  const [failureLogs, setFailureLogs] = useState<FailureLog[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.FAILURE_LOGS);
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
+    }
+  });
+
+  // Bingo Progress
+  const [bingoProgress, setBingoProgress] = useState<Record<string, 'not_started' | 'in_progress' | 'completed' | 'deferred'>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.BINGO_PROGRESS);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
     }
   });
 
@@ -299,20 +450,25 @@ export const PlacementProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Initial sync with Supabase PostgreSQL if configured
   useEffect(() => {
     async function initSupabase() {
-      const [dbEvents, dbApps, dbProjs, dbSettings] = await Promise.all([
+      const [dbEvents, dbApps, dbProjs, dbContacts, dbFailures, dbSettings] = await Promise.all([
         dbFetchEvents(),
         dbFetchApplications(),
         dbFetchProjects(),
+        dbFetchNetworkContacts(),
+        dbFetchFailureLogs(),
         dbFetchUserSettings()
       ]);
       if (dbEvents && dbEvents.length > 0) setEvents(dbEvents);
       if (dbApps && dbApps.length > 0) setApplications(dbApps);
       if (dbProjs && dbProjs.length > 0) setProjects(dbProjs);
+      if (dbContacts && dbContacts.length > 0) setNetworkContacts(dbContacts);
+      if (dbFailures && dbFailures.length > 0) setFailureLogs(dbFailures);
       if (dbSettings) {
         if (dbSettings.user_name) setUserName(dbSettings.user_name);
         if (dbSettings.node_progress) setNodeProgress(dbSettings.node_progress);
         if (dbSettings.daily_focus) setDailyFocusState(dbSettings.daily_focus);
         if (dbSettings.manifestation) setManifestation(dbSettings.manifestation);
+        if (dbSettings.bingo_progress) setBingoProgress(dbSettings.bingo_progress);
       }
     }
     initSupabase();
@@ -357,6 +513,19 @@ export const PlacementProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
   }, [projects]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.NETWORK_CONTACTS, JSON.stringify(networkContacts));
+  }, [networkContacts]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.FAILURE_LOGS, JSON.stringify(failureLogs));
+  }, [failureLogs]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.BINGO_PROGRESS, JSON.stringify(bingoProgress));
+    dbSaveUserSettings({ bingoProgress });
+  }, [bingoProgress]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.MANIFESTATION, JSON.stringify(manifestation));
@@ -673,6 +842,66 @@ export const PlacementProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dbDeleteProject(id);
   };
 
+  // Network Contacts
+  const addNetworkContact = (data: Omit<NetworkContact, 'id' | 'createdAt'>): NetworkContact => {
+    const newContact: NetworkContact = {
+      ...data,
+      id: 'nc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+      createdAt: new Date().toISOString()
+    };
+    setNetworkContacts(prev => [newContact, ...prev]);
+    dbSaveNetworkContact(newContact);
+    return newContact;
+  };
+
+  const updateNetworkContact = (id: string, updates: Partial<NetworkContact>) => {
+    setNetworkContacts(prev => {
+      const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+      const target = updated.find(c => c.id === id);
+      if (target) dbSaveNetworkContact(target);
+      return updated;
+    });
+  };
+
+  const deleteNetworkContact = (id: string) => {
+    setNetworkContacts(prev => prev.filter(c => c.id !== id));
+    dbDeleteNetworkContact(id);
+  };
+
+  // Failure Logs
+  const addFailureLog = (data: Omit<FailureLog, 'id' | 'createdAt'>): FailureLog => {
+    const newLog: FailureLog = {
+      ...data,
+      id: 'fail_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+      createdAt: new Date().toISOString()
+    };
+    setFailureLogs(prev => [newLog, ...prev]);
+    dbSaveFailureLog(newLog);
+    return newLog;
+  };
+
+  const updateFailureLog = (id: string, updates: Partial<FailureLog>) => {
+    setFailureLogs(prev => {
+      const updated = prev.map(l => l.id === id ? { ...l, ...updates } : l);
+      const target = updated.find(l => l.id === id);
+      if (target) dbSaveFailureLog(target);
+      return updated;
+    });
+  };
+
+  const deleteFailureLog = (id: string) => {
+    setFailureLogs(prev => prev.filter(l => l.id !== id));
+    dbDeleteFailureLog(id);
+  };
+
+  // Bingo Progress
+  const updateBingoProgress = (itemId: string, status: 'not_started' | 'in_progress' | 'completed' | 'deferred') => {
+    setBingoProgress(prev => ({
+      ...prev,
+      [itemId]: status
+    }));
+  };
+
 
   // Manifestation
   const updateManifestation = (updates: Partial<ManifestationProfile>) => {
@@ -894,6 +1123,16 @@ export const PlacementProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updateManifestation,
         dailyCheckins,
         addDailyCheckin,
+        networkContacts,
+        addNetworkContact,
+        updateNetworkContact,
+        deleteNetworkContact,
+        failureLogs,
+        addFailureLog,
+        updateFailureLog,
+        deleteFailureLog,
+        bingoProgress,
+        updateBingoProgress,
         aiMessages,
         addAIMessage,
         clearAIChat,
