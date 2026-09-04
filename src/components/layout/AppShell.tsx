@@ -109,9 +109,11 @@ export const AppShell: React.FC<AppShellProps> = ({
               onClick={() => onTabChange('home')}
               className="flex items-center gap-2.5 text-left group focus:outline-none cursor-pointer min-w-0"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#5856D6] text-white flex items-center justify-center shadow-sm shadow-[#5856D6]/30 group-hover:scale-105 transition-transform shrink-0">
-                <Target className="w-4 h-4 stroke-[2.2]" />
-              </div>
+              <img
+                src="/LOGO.png"
+                alt="Placement OS Logo"
+                className="w-8 h-8 rounded-lg object-contain bg-gray-900 border border-gray-200 dark:border-[#282830] p-0.5 shadow-sm shadow-[#5856D6]/30 group-hover:scale-105 transition-transform shrink-0"
+              />
               <div className="min-w-0 truncate">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold tracking-tight text-sm sm:text-base text-gray-900 dark:text-white truncate">
