@@ -16,6 +16,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { usePlacement } from '../../context/PlacementContext';
+import { getFallbackMentorResponse } from '../../lib/mentorEngine';
 
 interface AIMentorViewProps {
   initialQuery?: string;
@@ -148,11 +149,17 @@ export const AIMentorView: React.FC<AIMentorViewProps> = ({ initialQuery, onOpen
 
       setMessages(prev => [...prev, aiMessage]);
     } catch (err: any) {
+      const hasPlan = textToSend.toLowerCase().includes('plan') || textToSend.toLowerCase().includes('study today');
       const fallbackMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: `Based on your active roadmap node (${currentPhaseName}), focus your highest cognitive window today on **DSA Two Pointers & Binary Search**, followed by **20 timed Aptitude problems**.\n\nExecution standard: Write your solutions in plain text without syntax autocomplete to match real campus OA environments.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        text: getFallbackMentorResponse(textToSend, { currentPhase: currentPhaseName }),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        suggestedPlan: hasPlan ? {
+          title: 'Daily AI Placement Drill',
+          duration: 75,
+          category: 'DSA'
+        } : undefined
       };
       setMessages(prev => [...prev, fallbackMessage]);
     } finally {
